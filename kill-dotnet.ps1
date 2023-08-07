@@ -1,0 +1,1 @@
+kill-process.ps1 dotnet
