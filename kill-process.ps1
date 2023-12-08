@@ -1,62 +1,27 @@
-$idOrName = $args[0]
+$process, $isContainingName = .\find-process.ps1 $args[0]
 
-if([string]::IsNullOrEmpty($idOrName))
-{
-    Write-Host "Please provide a process id or name."
+if ($null -eq $process) {
     return
 }
 
-$process = Get-Process -Name $idOrName -ErrorAction SilentlyContinue
+if ($true -eq $isContainingName) {
+    for($i = 0; $i -lt $process.Count; $i++) {
+        Write-Host $i": $($process[$i].ProcessName) with id $($process[$i].Id)"
+    }
+    Write-Host "Processes found. Which ones do you want to kill? (separate by space, a for all, q to quit)"
+    $answer = Read-Host
 
-if($idOrName -is [int] -and $null -eq $process)
-{
-    Write-Host "Process name not found. Trying to find process by id..."
-    $process = Get-Process -Id $idOrName -ErrorAction SilentlyContinue
-}
-
-if($null -eq $process)
-{
-    Write-Host "Process not found. Trying to find process by containing name..."
-    $process = Get-Process -Name "*$idOrName*" -ErrorAction SilentlyContinue
-
-    if($null -eq $process)
-    {
-        Write-Host "Process not found."
+    if ($answer -eq "q") {
         return
     }
 
-    if($process.Count -gt 0)
-    {
-        Write-Host "Found $($process.Count) processes:"
-        foreach($p in $process)
-        {
-            Write-Host "    $($p.ProcessName) with id $($p.Id)"
-        }
-
-        Write-Host "Processes found. Do you want to kill all of them? (y/n)"
-        $answer = Read-Host
-
-        if($answer -ne "n")
-        {
-            Write-Host "Killing all processes..."
-        }
-        else
-        {
-            Write-Host "Aborting..."
-            return
-        }
+    if ($answer -ne "a") {
+        $process = $answer.Split(" ") | ForEach-Object { $process[$_] }   
     }
 }
 
-if($null -eq $process)
-{
-    Write-Host "Process not found."
-    return
-}
 
-
-foreach($p in $process)
-{
+foreach ($p in $process) {
     Write-Host "Killing $($p.ProcessName) with id $($p.Id)..."
 }
 
