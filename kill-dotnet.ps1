@@ -1,1 +1,1 @@
-kill-process.ps1 dotnet
+Stop-Process -Name dotnet -Force 
