@@ -1,4 +1,4 @@
-$process, $isContainingName = .\find-process.ps1 $args[0]
+$process, $isContainingName = find-process.ps1 $args[0]
 
 if ($null -eq $process) {
     return
