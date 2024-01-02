@@ -26,7 +26,7 @@ if($null -eq $process)
     }
 
     Write-Host "Found $($process.Count) processes:"
-    return $process, $true
+    return ($true, $process)
 }
 
 if($null -eq $process)
@@ -37,4 +37,4 @@ if($null -eq $process)
 
 Write-Host "Found $($process.Count) processes:"
 
-return $process
+return $false, $process
